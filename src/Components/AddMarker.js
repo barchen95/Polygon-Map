@@ -1,32 +1,37 @@
 import React, { useState } from "react";
-import Add from "@material-ui/icons/Add";
-import Close from "@material-ui/icons/Close";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles(() => ({
+    myText:{
+        width: '50%',
+        display: 'flex'
+    }
+}));
 
 
 export default function AddMarker(props) {
-    const [open, setOpen] = useState(false);
+    const classes = useStyles();
     const [lat, setLat] = useState("");
     const [lng, setLng] = useState("");
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    
+    function isNumber(v) {
+        var float = /^[-+]?[0-9]+\.[0-9]+$/;
+        var int = /^-?[0-9]+$/;
+        return float.test(v) || int.test(v);
+    }
 
     const addMarker = () => {
         const loc = [Number(lat), Number(lng)];
-        if (!props.isExists(loc)) {
-            props.addMarker(loc)
-            handleClose();
+        if (props.isExists(loc) === -1) {
+            if (isNumber(loc[0]) && isNumber(loc[1])) {
+                props.addMarker(loc)
+                setLat("");
+                setLng("");
+            }
+            else
+                alert("The location must be a number")
         }
         else
             alert("this location already exists")
@@ -41,17 +46,9 @@ export default function AddMarker(props) {
 
     return (
         <>
-            <Fab style={{ position: 'absolute', right: 0 }}>
-                <Add onClick={handleClickOpen} />
-            </Fab>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="form-dialog-title"
-            >
-                <DialogTitle id="form-dialog-title">Add marker</DialogTitle>
-                <DialogContent>
+
                     <TextField
+                    className={classes.myText}
                         autoFocus
                         margin="dense"
                         id="lat"
@@ -61,6 +58,7 @@ export default function AddMarker(props) {
                         onChange={onChangeLat}
                     />
                     <TextField
+                    className={classes.myText}
                         autoFocus
                         margin="dense"
                         id="lng"
@@ -69,12 +67,10 @@ export default function AddMarker(props) {
                         value={lng}
                         onChange={onChangeLng}
                     />
-                </DialogContent>
-                <DialogActions>
-                    <Add onClick={addMarker} />
-                    <Close onClick={handleClose} />
-                </DialogActions>
-            </Dialog>
+               
+               <Button variant="contained"  onClick={addMarker}  color="primary">
+        Add
+      </Button>
         </>
     );
 }
