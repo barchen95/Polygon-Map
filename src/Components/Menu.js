@@ -39,7 +39,10 @@ export default function Menu(props) {
       alert("map name cant be empty");
     } else {
       const cords = props.markers.map((x) => x.location);
-      CreateMap(props.mapName, cords);
+      if (cords.length === 0)
+        alert("cant creat map without cords")
+      else
+        CreateMap(props.mapName, cords, (mapId) =>{ alert(mapId); props.setMapID(mapId)});
     }
   };
 
@@ -47,7 +50,7 @@ export default function Menu(props) {
     if (props.mapID === "") {
       alert("map name cant be empty");
     } else {
-      GetMap(props.mapID, (res) => props.loadMapDetails(res.map, res.cords));
+      GetMap(props.mapID, (res) => (res)? props.loadMapDetails(res.map, res.cords) : alert("map id dont exists"));
     }
   };
 

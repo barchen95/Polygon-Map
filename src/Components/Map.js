@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Menu from "./Menu";
 import consts from "./../Constant/consts";
 import { isLoctionsAlreadyExists, marketValidation } from "./../Services/utils";
-import { UpdateMap, GetMap } from './../Services/salesforceService'
+import { UpdateMap, GetMap } from "./../Services/salesforceService";
 
 const useStyles = makeStyles(() => ({
   myAlerts: {
@@ -30,6 +30,7 @@ export default function Map(props) {
   const [mapID, setMapID] = useState(null);
   const onChangeMapName = (e) => {
     setMapName(e.target.value);
+    
   };
 
   const onChangeMapID = (e) => {
@@ -39,10 +40,10 @@ export default function Map(props) {
   useEffect(() => {
     const mapID = new URLSearchParams(window.location.search).get("c__MapId");
     if (mapID) {
-        setMapID(mapID)
-        GetMap(mapID, (res) => loadMapDetails(res.map, res.cords))
+      setMapID(mapID);
+      GetMap(mapID, (res) => (res)?loadMapDetails(res.map, res.cords): alert("map id dont exists"));
     }
-  });
+  }, []);
 
   const loadMapDetails = (map, cords) => {
     setMapName(map.Name__c);
@@ -71,7 +72,9 @@ export default function Map(props) {
       });
       setError(errorTorender);
     } else {
-        UpdateMap(mapID, null, [loc], null)
+      if (mapID) {
+        UpdateMap(mapID, null, [loc], null);
+      }
 
       const markersCopy = JSON.parse(JSON.stringify(markers));
       markersCopy.push({ location: loc, option: { color: "red" } });
@@ -121,8 +124,12 @@ export default function Map(props) {
       <div className={classes.myAlerts}>{error}</div>
       <Grid item style={{ width: "50%" }}>
         <Menu
-        mapName={mapName} onChangeMapName={onChangeMapName}
-        mapID={mapID} setMapID={onChangeMapID} setMapName={setMapName}
+          mapName={mapName}
+          onChangeMapName={onChangeMapName}
+          setMapID={setMapID}
+          mapID={mapID}
+          setMapName={setMapName}
+          onChangeMapID={onChangeMapID}
           loadMapDetails={loadMapDetails}
           addMarker={addMarker}
           markers={markers}

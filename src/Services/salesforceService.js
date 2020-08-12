@@ -19,12 +19,14 @@ window.Visualforce.remoting.Manager.invokeAction(
   );
 }
 
-const CreateMap  = (mapName, cords) => {
+const CreateMap  = (mapName, cords, callback) => {
     window.Visualforce.remoting.Manager.invokeAction(
         "Maps.CreateMap",
         mapName,
         cords,
-        function (res, e) {}
+        function (res, e) { 
+            callback(res);
+        }
       );
 }
 

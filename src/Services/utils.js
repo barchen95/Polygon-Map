@@ -25,9 +25,6 @@ const marketValidation = (loctions, loc, mapID) => {
     if (loc[lat] < 0 || loc[lng] < 0)
       error.push("The location must be positive number");
   }
-  if (mapID == null) {
-    error.push("you must have map id");
-  }
 
   return error
 };
